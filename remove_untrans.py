@@ -10,12 +10,21 @@ import polib
 po_filename = sys.argv[1]
 po = polib.pofile(po_filename)
 
-translated_only = polib.POFile()
-translated_only.metadata=po.metadata
+sanitized = polib.POFile()
+sanitized.metadata=po.metadata
 
 for entry in po:
-    if entry.msgid == entry.msgstr:
-        continue
-    translated_only.append(entry)
+    msgstr = entry.msgstr
 
-print translated_only
+    # Assume untranslated if source and translation are the same
+    if entry.msgid == entry.msgstr:
+        msgstr = ""
+
+    sanitized_entry = polib.POEntry(
+        msgid=entry.msgid,
+        msgstr=msgstr,
+        occurrences=entry.occurrences
+    )
+    sanitized.append(sanitized_entry)
+
+print sanitized
