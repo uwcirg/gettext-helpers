@@ -12,7 +12,8 @@ translated_only = polib.POFile()
 translated_only.metadata=po.metadata
 
 for entry in po:
-    if entry.msgid == entry.msgstr:
+    # Do not emit empty translations
+    if not entry.msgstr or entry.msgid == entry.msgstr:
         continue
 
     reversed_entry = polib.POEntry(
